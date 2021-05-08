@@ -4,11 +4,16 @@ import Footer from "./Footer";
 import Header from "./Header";
 import { getProducts } from "./services/productService";
 import Spinner from "./Spinner";
+import useFetch from "./services/useFetch";
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export default function App() {
   const [size, setSize] = useState("");
+  const { data: products, loading, error } = useFetch(
+    "products?category=shoes"
+  );
 
-  //Moved to useFetch
+  //Moved to useFetch for more generic use
   // const [products, setProducts] = useState([]);
   // const [error, setError] = useState(null);
   // const [loading, setLoading] = useState(true);
