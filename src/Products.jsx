@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Spinner from "./Spinner";
 import useFetch from "./services/useFetch";
+import PageNotFound from "./PageNotFound";
+import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export default function Products() {
   const [size, setSize] = useState("");
+  // read category from url parameter
+  const { category } = useParams(); // read url parameters after : eg. /:category in App file
+
   const { data: products, loading, error } = useFetch(
-    "products?category=shoes"
+    `products?category=${category}`
   );
 
   //Moved to useFetch for more generic use
@@ -33,11 +40,11 @@ export default function Products() {
   const renderProduct = (p) => {
     return (
       <div key={p.id} className="product">
-        <a href="/">
+        <Link to={`/${category}/${p.id}`}>
           <img src={`/images/${p.image}`} alt={p.name} />
           <h3>{p.name}</h3>
           <p>${p.price}</p>
-        </a>
+        </Link>
       </div>
     );
   };
@@ -48,7 +55,7 @@ export default function Products() {
 
   if (error) throw error;
   if (loading) return <Spinner />; // render spinner if fetch is still processing
-
+  if (products.length === 0) return <PageNotFound />;
   // to zwraca JSX wszystko przed tym bedzie renderowane wczesniej
   return (
     <>

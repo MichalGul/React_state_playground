@@ -8,23 +8,25 @@ export default function useFetch(url) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // function loading api data from url
+  async function init() {
+    try {
+      const response = await fetch(baseUrl + url);
+      if (response.ok) {
+        const json = await response.json();
+        setData(json);
+      } else {
+        throw response;
+      }
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   //Generic call for mock API for some data
   useEffect(() => {
-    async function init() {
-      try {
-        const response = await fetch(baseUrl + url);
-        if (response.ok) {
-          const json = await response.json();
-          setData(json);
-        } else {
-          throw response;
-        }
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    }
     init();
   }, [url]); // Jezeli ktos poda nowy url do tej funcji to hook musi sie odpalic dlatego to jest w dependency array
 
