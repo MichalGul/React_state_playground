@@ -6,6 +6,7 @@ import Products from "./Products";
 import { Routes, Route } from "react-router-dom";
 import Detail from "./Detail";
 import Cart from "./Cart";
+import Checkout from "./Checkout";
 
 // Główny layout aplikacji App Layout
 export default function App() { // jest w funkcji zeby tylko raz sie zainicjolizowalo a nie za kazdym renderem
@@ -47,6 +48,10 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
 
   }
 
+  function emptyCart() {
+    setCart([]);
+  }
+
   return (
     <>
       <div className="content">
@@ -60,6 +65,7 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
               element={<Detail addToCart={addToCart} />}
             />
             <Route path="/cart" element={<Cart cart={cart} updateQuantity={updateQuantity} />} />
+            <Route path="/checkout" element={<Checkout cart={cart} emptyCart={emptyCart} />} />
           </Routes>
         </main>
       </div>
