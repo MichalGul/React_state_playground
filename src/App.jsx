@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useEffect, useReducer} from "react";
 import "./App.css";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -7,50 +7,72 @@ import { Routes, Route } from "react-router-dom";
 import Detail from "./Detail";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
+import cartReducer from "./cartReducer";
+
+// let initialCart;
+// // Call once on initial page load
+//     try {
+//       initialCart = JSON.parse(localStorage.getItem("cart")) ?? []; // jezeli na lewo od ?? ejst null to daj []
+//     } catch (e) {
+//       console.error("The cart could not be parsed into JSON")
+//       initialCart = []
+//     }
+
+let initialCart;
+try {
+  initialCart = JSON.parse(localStorage.getItem("cart")) ?? [];
+} catch {
+  console.error("The cart could not be parsed into JSON.");
+  initialCart = [];
+}
+
 
 // Główny layout aplikacji App Layout
 export default function App() { // jest w funkcji zeby tylko raz sie zainicjolizowalo a nie za kazdym renderem
-  const [cart, setCart] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("cart")) ?? []; // jezeli na lewo od ?? ejst null to daj []
-    } catch (e) {
-      console.error("The cart could not be parsed into JSON")
-      return [];
-    }
-  });
+  // const [cart, setCart] = useState(() => {
+  //   try {
+  //     return JSON.parse(localStorage.getItem("cart")) ?? []; // jezeli na lewo od ?? ejst null to daj []
+  //   } catch (e) {
+  //     console.error("The cart could not be parsed into JSON")
+  //     return [];
+  //   }
+  // });
+
+  const [cart, dispatch] = useReducer(cartReducer, initialCart);
 
   //Gdy cart sie zmieni odpal use Effect i zapisz cart pod kluczem cart to local storage
   useEffect(() => localStorage.setItem("cart", JSON.stringify(cart)), [cart])
 
-  const addToCart = (id, sku) => {
-    setCart((items) => {
-      const itemInCart = items.find((i) => i.sku === sku); // if sku in cart
-      // itemInCart++; // DONT DO THIS !!!!!!!!!!!
-      if (itemInCart) {
-        //return new array with matching item replaced
-        return items.map(
-          (i) => (i.sku === sku ? { ...i, quantity: i.quantity + 1 } : i) // obsluga dodania obiektu ktory juz jest w koszyku
-        );
-      } else {
-        // return new array with new item appended
-        return [...items, { id: id, sku: sku, quantity: 1 }]; // dodanie nowego obiektu do listy stanu
-      }
-    }); // Cokolwiek zwrocimy w metodzie setCart zostanie nowym stanem dla cart!!!!!
-  };
-
-  const updateQuantity = (sku, quantity) => {
-    setCart((items) => {
-      if( quantity === 0) {
-        return items.filter((i) => i.sku !== sku)
-      }
-      return items.map ((i) => i.sku === sku ? {...i, quantity:quantity} : i)
-    })
-
-  }
-
-  function emptyCart() {
-    setCart([]);
-  }
+  /////// Replaced with use reducer
+  // const addToCart = (id, sku) => {
+  //   setCart((items) => {
+  //     const itemInCart = items.find((i) => i.sku === sku); // if sku in cart
+  //     // itemInCart++; // DONT DO THIS !!!!!!!!!!!
+  //     if (itemInCart) {
+  //       //return new array with matching item replaced
+  //       return items.map(
+  //         (i) => (i.sku === sku ? { ...i, quantity: i.quantity + 1 } : i) // obsluga dodania obiektu ktory juz jest w koszyku
+  //       );
+  //     } else {
+  //       // return new array with new item appended
+  //       return [...items, { id: id, sku: sku, quantity: 1 }]; // dodanie nowego obiektu do listy stanu
+  //     }
+  //   }); // Cokolwiek zwrocimy w metodzie setCart zostanie nowym stanem dla cart!!!!!
+  // };
+  //
+  // const updateQuantity = (sku, quantity) => {
+  //   setCart((items) => {
+  //     if( quantity === 0) {
+  //       return items.filter((i) => i.sku !== sku)
+  //     }
+  //     return items.map ((i) => i.sku === sku ? {...i, quantity:quantity} : i)
+  //   })
+  //
+  // }
+  //
+  // function emptyCart() {
+  //   setCart([]);
+  // }
 
   return (
     <>
@@ -62,10 +84,10 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
             <Route path="/:category" element={<Products />} />
             <Route
               path="/:category/:id"
-              element={<Detail addToCart={addToCart} />}
+              element={<Detail dispatch={dispatch} />}
             />
-            <Route path="/cart" element={<Cart cart={cart} updateQuantity={updateQuantity} />} />
-            <Route path="/checkout" element={<Checkout cart={cart} emptyCart={emptyCart} />} />
+            <Route path="/cart" element={<Cart cart={cart} dispatch={dispatch} />} />
+            <Route path="/checkout" element={<Checkout cart={cart} dispatch={dispatch} />} />
           </Routes>
         </main>
       </div>
