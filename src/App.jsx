@@ -8,6 +8,7 @@ import Detail from "./Detail";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
 import cartReducer from "./cartReducer";
+import CartContext from "./cartContext"
 
 // let initialCart;
 // // Call once on initial page load
@@ -75,7 +76,8 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
   // }
 
   return (
-    <>
+      // dodanie contextu stworzonego w cartContext value określa co ma być dzielone, te warości mogą być użytę teraz przez cartContext
+      <CartContext.Provider value={{cart, dispatch}}>
       <div className="content">
         <Header />
         <main>
@@ -92,6 +94,6 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
         </main>
       </div>
       <Footer />
-    </>
+    </CartContext.Provider>
   );
 }

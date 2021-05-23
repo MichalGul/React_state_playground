@@ -1,12 +1,15 @@
-import React from "react";
+import React, {useContext} from "react";
 import useFetchAll from "./services/useFetchAll";
 import Spinner from "./Spinner";
 import {useNavigate} from 'react-router-dom'
+import {CartContext} from "./cartContext";
 
-export default function Cart({ cart, dispatch }) { // props destructurin
+export default function Cart({ cart, dispatch }) { // props destructurin, jaj jest context to juz nie trzeba propsow przekazywac
   const urls = cart.map((i) => `products/${i.id}`); // array of urls for products
   const { data: products, loading, error } = useFetchAll(urls);
   const navigate = useNavigate();
+  // consumig context
+  const {cart, dispatch} = useContext(CartContext) // to zwraca rzeczy wrzucone do contextu w app.js (prop value)
 
   function renderItem(itemInCart) {
     const { id, sku, quantity } = itemInCart;
