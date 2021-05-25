@@ -8,7 +8,8 @@ import Detail from "./Detail";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
 import cartReducer from "./cartReducer";
-import CartContext from "./cartContext"
+import {CartContext} from "./cartContext"
+import {useCart} from "./cartContext"
 
 // let initialCart;
 // // Call once on initial page load
@@ -18,14 +19,14 @@ import CartContext from "./cartContext"
 //       console.error("The cart could not be parsed into JSON")
 //       initialCart = []
 //     }
-
-let initialCart;
-try {
-  initialCart = JSON.parse(localStorage.getItem("cart")) ?? [];
-} catch {
-  console.error("The cart could not be parsed into JSON.");
-  initialCart = [];
-}
+// Moved to cart provider
+// let initialCart;
+// try {
+//   initialCart = JSON.parse(localStorage.getItem("cart")) ?? [];
+// } catch {
+//   console.error("The cart could not be parsed into JSON.");
+//   initialCart = [];
+// }
 
 
 // Główny layout aplikacji App Layout
@@ -39,10 +40,12 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
   //   }
   // });
 
-  const [cart, dispatch] = useReducer(cartReducer, initialCart);
+  //moved to cart context provider
+  // const [cart, dispatch] = useReducer(cartReducer, initialCart);
 
   //Gdy cart sie zmieni odpal use Effect i zapisz cart pod kluczem cart to local storage
-  useEffect(() => localStorage.setItem("cart", JSON.stringify(cart)), [cart])
+  //moved to cartCOntext
+  // useEffect(() => localStorage.setItem("cart", JSON.stringify(cart)), [cart])
 
   /////// Replaced with use reducer
   // const addToCart = (id, sku) => {
@@ -75,9 +78,11 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
   //   setCart([]);
   // }
 
+
   return (
       // dodanie contextu stworzonego w cartContext value określa co ma być dzielone, te warości mogą być użytę teraz przez cartContext
-      <CartContext.Provider value={{cart, dispatch}}>
+      // <CartContext.Provider value={{cart, dispatch}}> nie potrzebne bo korzystamy z CartProvidera w index.js
+      <>
       <div className="content">
         <Header />
         <main>
@@ -86,14 +91,17 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
             <Route path="/:category" element={<Products />} />
             <Route
               path="/:category/:id"
-              element={<Detail dispatch={dispatch} />}
+              element={<Detail />}
             />
-            <Route path="/cart" element={<Cart cart={cart} dispatch={dispatch} />} />
-            <Route path="/checkout" element={<Checkout cart={cart} dispatch={dispatch} />} />
+            {/*<Detail dispatch={dispatch} /> propsy juz nie potrzebne bo przez context sa dane przekazywane*/}
+            <Route path="/cart" element={<Cart/>} /> {/*<Cart cart={cart} dispatch={dispatch} /> juz nie trzeba bo jest context*/}
+            <Route path="/checkout" element={<Checkout />} />
+          {/* <Checkout cart={cart} dispatch={dispatch} /> zamiast przez propsy parametry ida przez context*/}
           </Routes>
         </main>
       </div>
       <Footer />
-    </CartContext.Provider>
+      </>
+    // </CartContext.Provider>
   );
 }

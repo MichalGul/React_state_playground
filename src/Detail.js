@@ -3,8 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import useFetch from "./services/useFetch";
 import Spinner from "./Spinner";
 import PageNotFound from "./PageNotFound";
+import {useCart} from "./cartContext";
 
 export default function Detail(props) {
+    const {dispatch} = useCart()
   const { category, id } = useParams(); // var
   const [sku, setSku] = useState("");
   const navigate = useNavigate(); // hook for redirecting !!
@@ -45,7 +47,7 @@ export default function Detail(props) {
           disabled={!sku ? true : false}
           className="btn btn-primary"
           onClick={() => {
-            props.dispatch({type:"add", id:id, sku:sku});
+            dispatch({type:"add", id:id, sku:sku});
             navigate("/cart");
           }}
         >
