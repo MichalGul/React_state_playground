@@ -4,9 +4,11 @@ import Footer from "./Footer";
 import Header from "./Header";
 import Products from "./Products";
 import { Routes, Route } from "react-router-dom";
-import Detail from "./Detail";
+// import Detail from "./Detail";
+import Detail from "./Detail.class";
 import Cart from "./Cart";
-import Checkout from "./Checkout";
+// import Checkout from "./Checkout"; function component Checkout
+import Checkout from "./Checkout.class"
 import cartReducer from "./cartReducer";
 import {CartContext} from "./cartContext"
 import {useCart} from "./cartContext"
@@ -78,6 +80,7 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
   //   setCart([]);
   // }
 
+  const {dispatch} = useCart()
 
   return (
       // dodanie contextu stworzonego w cartContext value określa co ma być dzielone, te warości mogą być użytę teraz przez cartContext
@@ -95,7 +98,7 @@ export default function App() { // jest w funkcji zeby tylko raz sie zainicjoliz
             />
             {/*<Detail dispatch={dispatch} /> propsy juz nie potrzebne bo przez context sa dane przekazywane*/}
             <Route path="/cart" element={<Cart/>} /> {/*<Cart cart={cart} dispatch={dispatch} /> juz nie trzeba bo jest context*/}
-            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout" element={<Checkout dispatch={dispatch} />} />
           {/* <Checkout cart={cart} dispatch={dispatch} /> zamiast przez propsy parametry ida przez context*/}
           </Routes>
         </main>
